@@ -4,14 +4,6 @@ import numpy as np
 import pandas as pd
 import torch
 
-files_in_raw = os.listdir("data/raw")
-RAW_ORDERBOOK_NAME = [f for f in files_in_raw if "orderbook" in f][0]
-RAW_MESSAGE_NAME = [f for f in files_in_raw if "message" in f][0]
-
-RAW_ORDERBOOK_PATH = f"data/raw/{RAW_ORDERBOOK_NAME}"
-RAW_MESSAGE_PATH = f"data/raw/{RAW_MESSAGE_NAME}"
-OUT_PATH = "data/processed/aapl_lobster_balanced.pt"
-
 
 def compute_normalization(orderbook: np.ndarray, train_frac_for_stats: float = 0.7):
     """Compute mean/std from training portion only"""
@@ -104,6 +96,13 @@ def process_data():
     # Process data with balanced labels
     window_size = 100
     horizon = 10
+
+    files_in_raw = os.listdir("data/raw")
+    RAW_ORDERBOOK_NAME = [f for f in files_in_raw if "orderbook" in f][0]
+    RAW_MESSAGE_NAME = [f for f in files_in_raw if "message" in f][0]
+
+    RAW_ORDERBOOK_PATH = f"data/raw/{RAW_ORDERBOOK_NAME}"
+    OUT_PATH = "data/processed/aapl_lobster_balanced.pt"
 
     print(f"Loading orderbook from: {RAW_ORDERBOOK_PATH}")
     ob = pd.read_csv(RAW_ORDERBOOK_PATH, header=None).values.astype(np.float32)
