@@ -94,7 +94,7 @@ def train_model(model, train_ds, val_ds, config, device, class_weights, ckpt_nam
     scheduler = get_lr_scheduler(optimizer, config, len(train_loader))
     scaler = GradScaler(enabled=config.use_amp)
 
-    tracker = MetricsTracker()
+    tracker = MetricsTracker(log_wandb=True)
     best_val_acc = 0.0
 
     print(f"\n{'='*70}")

@@ -143,5 +143,5 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     train_dataset, val_dataset, test_dataset = get_datasets()
 
-    # train_transformer_base(device, train_dataset, val_dataset, test_dataset)
+    train_transformer_base(device, train_dataset, val_dataset, test_dataset)
     train_cnn_base(device, train_dataset, val_dataset, test_dataset)
