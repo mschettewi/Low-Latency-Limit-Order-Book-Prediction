@@ -32,6 +32,7 @@ def download_data():
     response = requests.get(url)
 
     if response.status_code != 200:
+        print(f"Error: Received status code {response.status_code}")
         raise Exception(f"Failed to download file from {url}")
 
     with open(zip_path, "wb") as f:
