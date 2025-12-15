@@ -4,6 +4,7 @@ import numpy as np
 import torch
 from sklearn.metrics import confusion_matrix, classification_report
 from torch.utils.data import DataLoader
+import torch.nn.functional as F
 
 
 def evaluate_model(model, test_ds, config, device, ckpt_path=None):
