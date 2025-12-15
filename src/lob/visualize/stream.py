@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
-from IPython.display import clear_output
+from IPython.display import clear_output, display
 import time
 
 
@@ -9,10 +9,10 @@ import time
 def visualize(
         model,
         obj,
-        device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
         samples=2000,
         visualization_sleep=0.001
 ):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device == torch.device("cuda"):
         print(f"Using GPU: {torch.cuda.get_device_name(0)}")
     else:
@@ -43,7 +43,7 @@ def visualize(
     shaded_x0 = 0
     shade = ax1.axvspan(shaded_x0, shaded_x0 + window_size - 1, color='gray', alpha=0.1)
 
-    fig.show()
+    display(fig)
 
     for k in range(0, N - window_size + 1):
         X = lob[k: k + window_size]
@@ -69,8 +69,7 @@ def visualize(
         ax3.legend()
 
         clear_output(wait=True)
-        fig.show()
+        display(fig)
 
         time.sleep(visualization_sleep)
-
 
