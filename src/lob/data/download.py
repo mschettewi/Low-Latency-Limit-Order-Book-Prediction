@@ -43,7 +43,7 @@ def download_data():
     with zipfile.ZipFile(zip_path, "r") as z:
         z.extractall("data/raw")
 
-    print("data/raw contains:", os.listdir("data/raw/Datasets"))
+    print("data/raw contains:", os.listdir("data/raw/BenchmarkDatasets"))
 
     OUT_PATH = "data/processed/fi2010_processed.pt"
     print("Will save to:", OUT_PATH)
