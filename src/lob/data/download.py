@@ -23,22 +23,22 @@ def download_data():
 
     if zip_path.exists():
         print(f"File {zip_path} already exists, skipping download.")
-        return
+    else:
+        print(f"Downloading data to {zip_path}.")
 
-    print(f"Downloading data to {zip_path}.")
+        # get link from command line since requires auth each time
+        url = input("Please provide the download URL from https://etsin.fairdata.fi/dataset/73eb48d7-4dbc-4a10-a52a-da745b47a649/data: ")
 
-    # get link from command line since requires auth each time
-    url = input("Please provide the download URL from https://etsin.fairdata.fi/dataset/73eb48d7-4dbc-4a10-a52a-da745b47a649/data: ")
+        response = requests.get(url)
 
-    response = requests.get(url)
+        if response.status_code != 200:
+            print(f"Error: Received status code {response.status_code}")
+            raise Exception(f"Failed to download file from {url}")
 
-    if response.status_code != 200:
-        print(f"Error: Received status code {response.status_code}")
-        raise Exception(f"Failed to download file from {url}")
+        with open(zip_path, "wb") as f:
+            f.write(response.content)
 
-    with open(zip_path, "wb") as f:
-        f.write(response.content)
-
+    print("Unzipping data")
     # Unzip into data/raw
     with zipfile.ZipFile(zip_path, "r") as z:
         z.extractall("data/raw")
