@@ -1,15 +1,13 @@
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.cuda.amp import autocast, GradScaler
 import time
-from dataclasses import dataclass, asdict
-import json
-import torch
-from torch.utils.data import DataLoader
-import wandb
 
-from .scheduler import get_lr_scheduler
+import torch
+import torch.nn.functional as F
+import wandb
+from torch.cuda.amp import autocast, GradScaler
+from torch.utils.data import DataLoader
+
 from .metrics import MetricsTracker
+from .scheduler import get_lr_scheduler
 
 wandb_project = "HPML LOB"
 
@@ -68,7 +66,8 @@ def validate(model, loader, config, device, class_weights):
     return total_loss / total, correct / total
 
 
-def train_model(model, train_ds, val_ds, config, device, class_weights, ckpt_name="best.pt", wandb_group="", wandb_name="", wandb_config={}):
+def train_model(model, train_ds, val_ds, config, device, class_weights, ckpt_name="best.pt", wandb_group="",
+                wandb_name="", wandb_config={}):
     """Complete training loop with class-weighted loss"""
     train_loader = DataLoader(
         train_ds, config.batch_size, shuffle=True,
@@ -97,9 +96,9 @@ def train_model(model, train_ds, val_ds, config, device, class_weights, ckpt_nam
     tracker = MetricsTracker(log_wandb=True)
     best_val_acc = 0.0
 
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"Training {config.num_epochs} epochs with BALANCED DATA + WEIGHTED LOSS")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
     print(f"AMP={config.use_amp}, compile={config.use_compile}")
     print(f"Train samples: {len(train_ds):,}, Val samples: {len(val_ds):,}")
     print(f"Class weights: {class_weights.cpu().numpy()}\n")
@@ -130,10 +129,10 @@ def train_model(model, train_ds, val_ds, config, device, class_weights, ckpt_nam
                 }, f"checkpoints/{ckpt_name}")
                 marker = " [BEST]"
 
-            print(f"Epoch {epoch+1:3d}/{config.num_epochs} | "
+            print(f"Epoch {epoch + 1:3d}/{config.num_epochs} | "
                   f"Loss: {train_loss:.4f}/{val_loss:.4f} | "
                   f"Acc: {train_acc:.4f}/{val_acc:.4f} | "
-                  f"LR: {lr:.6f} | {time.time()-t0:.1f}s{marker}")
+                  f"LR: {lr:.6f} | {time.time() - t0:.1f}s{marker}")
 
         print(f"\nTraining complete! Best val acc: {best_val_acc:.4f}")
         tracker.plot()

@@ -1,9 +1,9 @@
-from dataclasses import dataclass
-
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
+
 from .config import ModelConfig
+
 
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model: int, max_len: int = 5000, dropout: float = 0.1):
