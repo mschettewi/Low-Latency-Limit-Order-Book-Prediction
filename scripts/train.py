@@ -139,9 +139,52 @@ def train_cnn_base(device, train_dataset, val_dataset, test_dataset):
     print("Finished training CNN baseline.")
 
 
+def train_transformer_small(device, train_dataset, val_dataset, test_dataset):
+    # Train small model
+    config_small = ModelConfig.small()
+    config_small.num_epochs = 20
+    config_small.use_amp = True
+
+    config_small.print_summary("Small Model Configuration")
+
+    model_small = LOBTransformer(config_small)
+    model = LOBTransformer(ModelConfig.base())
+    print(f"Small model parameters: {model_small.count_parameters():,}")
+    print(f"Base model parameters: {model.count_parameters():,}")
+    print(f"Parameter reduction: {100 * (1 - model_small.count_parameters() / model.count_parameters()):.1f}%")
+
+    class_weights = compute_class_weights(train_dataset, device)
+
+    # Train small model
+    metrics_small = train_model(
+        model_small,
+        train_dataset,
+        val_dataset,
+        config_small,
+        device,
+        class_weights,
+        "transformer_small.pt",
+        wandb_name='transformer_small',
+        wandb_group='Transformer',
+        wandb_config={
+            'learning_rate': config_small.learning_rate,
+            'batch_size': config_small.batch_size,
+            'num_epochs': config_small.num_epochs,
+            'use_amp': config_small.use_amp,
+            'use_compile': config_small.use_compile,
+            'seq_length': config_small.seq_length,
+            'input_dim': config_small.input_dim,
+            'num_classes': config_small.num_classes,
+        }
+    )
+
+    print("Finished training Transformer small.")
+
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     train_dataset, val_dataset, test_dataset = get_datasets()
 
     train_transformer_base(device, train_dataset, val_dataset, test_dataset)
     train_cnn_base(device, train_dataset, val_dataset, test_dataset)
+
+    train_transformer_small(device, train_dataset, val_dataset, test_dataset)
