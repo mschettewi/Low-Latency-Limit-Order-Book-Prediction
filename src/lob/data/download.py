@@ -27,7 +27,8 @@ def download_data():
 
     print(f"Downloading data to {zip_path}.")
 
-    url = "https://download.fairdata.fi:443/download?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NjYwODk1MjIsImRhdGFzZXQiOiI3M2ViNDhkNy00ZGJjLTRhMTAtYTUyYS1kYTc0NWI0N2E2NDkiLCJmaWxlIjoiL3B1Ymxpc2hlZC9CZW5jaG1hcmtEYXRhc2V0cy9CZW5jaG1hcmtEYXRhc2V0cy56aXAiLCJwcm9qZWN0IjoidHR5ODAyMSIsInJhbmRvbV9zYWx0IjoiMzQ1NDEwODIifQ.sfIqzRZ82HPQyXldCrrNzZqICB-sUsAOE8btiff844o"
+    # get link from command line since requires auth each time
+    url = input("Please provide the download URL from https://etsin.fairdata.fi/dataset/73eb48d7-4dbc-4a10-a52a-da745b47a649/data: ")
 
     response = requests.get(url)
 
