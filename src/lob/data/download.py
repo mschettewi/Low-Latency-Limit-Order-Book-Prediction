@@ -18,13 +18,17 @@ print("Folders in CWD:", os.listdir())
 
 
 def download_data():
-    zip_path = PROJECT_ROOT / "data/raw/LOBSTER_SampleFile_AAPL_2012-06-21_10.zip"
+    zip_path = PROJECT_ROOT / "data/raw/BenchmarkDatasets.zip"
+
 
     if zip_path.exists():
         print(f"File {zip_path} already exists, skipping download.")
         return
 
-    url = "https://data.lobsterdata.com/info/sample/LOBSTER_SampleFile_AAPL_2012-06-21_10.zip"
+    print(f"Downloading data to {zip_path}.")
+
+    url = "https://download.fairdata.fi:443/download?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NjYwODk1MjIsImRhdGFzZXQiOiI3M2ViNDhkNy00ZGJjLTRhMTAtYTUyYS1kYTc0NWI0N2E2NDkiLCJmaWxlIjoiL3B1Ymxpc2hlZC9CZW5jaG1hcmtEYXRhc2V0cy9CZW5jaG1hcmtEYXRhc2V0cy56aXAiLCJwcm9qZWN0IjoidHR5ODAyMSIsInJhbmRvbV9zYWx0IjoiMzQ1NDEwODIifQ.sfIqzRZ82HPQyXldCrrNzZqICB-sUsAOE8btiff844o"
+
     response = requests.get(url)
 
     if response.status_code != 200:
@@ -46,7 +50,7 @@ def download_data():
 
     RAW_ORDERBOOK_PATH = f"data/raw/{RAW_ORDERBOOK_NAME}"
     RAW_MESSAGE_PATH = f"data/raw/{RAW_MESSAGE_NAME}"
-    OUT_PATH = "data/processed/aapl_lobster_balanced.pt"
+    OUT_PATH = "data/processed/fi2010_processed.pt"
 
     print("Orderbook path:", RAW_ORDERBOOK_PATH)
     print("Message path:", RAW_MESSAGE_PATH)

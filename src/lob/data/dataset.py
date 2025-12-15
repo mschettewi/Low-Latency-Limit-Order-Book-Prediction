@@ -3,7 +3,7 @@ from collections import Counter
 import torch
 from torch.utils.data import Dataset
 
-OUT_PATH = "data/processed/aapl_lobster_balanced.pt"
+OUT_PATH = "data/processed/fi2010_processed.pt"
 
 
 class LobsterSequenceDataset(Dataset):

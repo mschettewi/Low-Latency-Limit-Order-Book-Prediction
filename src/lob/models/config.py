@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class ModelConfig:
     # Input dimensions
     seq_length: int = 100
-    input_dim: int = 40
+    input_dim: int = 144
     num_classes: int = 3
 
     # Model architecture
