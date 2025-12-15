@@ -5,8 +5,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-# TODO update
-DATA_ROOT = "BenchmarkDatasets/NoAuction/1.NoAuction_Zscore"
+DATA_ROOT = "data/raw/BenchmarkDatasets/NoAuction/1.NoAuction_Zscore"
 
 # Horizon mapping for FI-2010 labels:
 # 0 -> k=10 (Next 10 ticks) | 1 -> k=20 | 2 -> k=30 | 3 -> k=50 | 4 -> k=100
@@ -110,6 +109,8 @@ def load_fi2010_partition(root_dir, partition):
     sub_folder = f"NoAuction_Zscore_{partition}"  # e.g. NoAuction_Zscore_Training
     search_path = os.path.join(root_dir, sub_folder, "*.txt")
 
+    print(f"Searching for files in: {search_path}")
+
     files = sorted(glob.glob(search_path))
     if not files:
         raise ValueError(f"No .txt files found in {search_path}. Check your path!")
@@ -150,6 +151,7 @@ def load_fi2010_partition(root_dir, partition):
     Y = np.concatenate(all_labels, axis=0).astype(np.int64)
 
     return X, Y
+
 
 def process_data():
     # --- EXECUTION ---
