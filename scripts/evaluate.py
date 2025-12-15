@@ -1,16 +1,15 @@
 import os
 import sys
 
-import torch
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.lob.data.dataset import get_datasets
 from src.lob.evals.evaluate import evaluate_model
 from src.lob.models.cnn import LOBCNN
 from src.lob.models.config import ModelConfig
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from src.lob.models.transformer import LOBTransformer
+
+import torch
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -22,13 +21,7 @@ def evaluate_and_print(name, model_cls, config, ckpt_name):
     model = model_cls(config).to(device)
     ckpt_path = f"checkpoints/{ckpt_name}"
 
-    results = evaluate_model(
-        model=model,
-        test_ds=test_dataset,
-        config=config,
-        device=device,
-        ckpt_path=ckpt_path,
-    )
+    results = evaluate_model(model=model, test_ds=test_dataset, config=config, device=device, ckpt_path=ckpt_path, )
 
     # Adjust keys if your evaluate_model dict uses different names
     test_acc = results.get("test_acc", None)
@@ -50,12 +43,8 @@ transformer_config.use_compile = False  # Set True if using GPU with torch 2.0+
 transformer_config.print_summary("Model Configuration")
 
 # 1) Transformer ('transformer_balanced.pt' and 'config')
-transformer_results = evaluate_and_print(
-    name="Transformer",
-    model_cls=LOBTransformer,
-    config=transformer_config,
-    ckpt_name="transformer_balanced.pt",
-)
+transformer_results = evaluate_and_print(name="Transformer", model_cls=LOBTransformer, config=transformer_config,
+    ckpt_name="transformer_balanced.pt", )
 
 cnn_config = ModelConfig()  # or ModelConfig.base()
 
@@ -76,10 +65,5 @@ cnn_config.use_amp = True
 cnn_config.use_compile = False
 
 # 2) CNN baseline
-cnn_results = evaluate_and_print(
-    name="CNN baseline",
-    model_cls=LOBCNN,
-    config=cnn_config,
-    ckpt_name="cnn_baseline.pt",
-)
-
+cnn_results = evaluate_and_print(name="CNN baseline", model_cls=LOBCNN, config=cnn_config,
+    ckpt_name="cnn_baseline.pt", )
