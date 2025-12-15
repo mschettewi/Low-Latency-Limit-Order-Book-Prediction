@@ -43,19 +43,9 @@ def download_data():
     with zipfile.ZipFile(zip_path, "r") as z:
         z.extractall("data/raw")
 
-    print("data/raw contains:", os.listdir("data/raw"))
+    print("data/raw contains:", os.listdir("data/raw/Datasets"))
 
-    # Pick out the orderbook and message file names automatically
-    files_in_raw = os.listdir("data/raw")
-    RAW_ORDERBOOK_NAME = [f for f in files_in_raw if "orderbook" in f][0]
-    RAW_MESSAGE_NAME = [f for f in files_in_raw if "message" in f][0]
-
-    RAW_ORDERBOOK_PATH = f"data/raw/{RAW_ORDERBOOK_NAME}"
-    RAW_MESSAGE_PATH = f"data/raw/{RAW_MESSAGE_NAME}"
     OUT_PATH = "data/processed/fi2010_processed.pt"
-
-    print("Orderbook path:", RAW_ORDERBOOK_PATH)
-    print("Message path:", RAW_MESSAGE_PATH)
     print("Will save to:", OUT_PATH)
 
 
