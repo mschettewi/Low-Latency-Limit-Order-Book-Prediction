@@ -9,10 +9,10 @@ import time
 def visualize(
         model,
         obj,
+        device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
         samples=2000,
         visualization_sleep=0.001
 ):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device == torch.device("cuda"):
         print(f"Using GPU: {torch.cuda.get_device_name(0)}")
     else:
