@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 def evaluate_model(model, test_ds, config, device, name=""):
     """Comprehensive model evaluation"""
     print(f"\n===== Evaluating {name} =====")
-
+    model.to(device)
     model.eval()
 
     loader = DataLoader(test_ds, config.batch_size, shuffle=False, num_workers=0, pin_memory=True)

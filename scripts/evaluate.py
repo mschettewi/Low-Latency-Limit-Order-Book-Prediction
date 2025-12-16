@@ -55,7 +55,7 @@ if __name__ == "__main__":
     model = LOBCNN(cnn_config).to(device)
 
     evaluate_model(model=model, test_ds=test_dataset, config=cnn_config, device=device, name="cnn_baseline")
-    benchmark_model(model=model, config=cnn_config, device=device, wandb_group="CNN", wandb_name="transformer_balanced")
+    benchmark_model(model=model, config=cnn_config, device=device, wandb_group="CNN", wandb_name="cnn_baseline")
 
     ######## Transformer Small ########
     config_small = ModelConfig.small()
@@ -64,8 +64,9 @@ if __name__ == "__main__":
 
     config_small.print_summary("Small Model Configuration")
 
-    model_small = LOBTransformer(config_small)
+    model_small = LOBTransformer(config_small).to(device)
 
-    evaluate_model(model=model_small, test_ds=test_dataset, config=config_small, device=device, name="cnn_baseline")
+    evaluate_model(model=model_small, test_ds=test_dataset, config=config_small, device=device,
+                   name="transformer_small")
     benchmark_model(model=model_small, config=config_small, device=device, wandb_group="Transformer",
                     wandb_name="transformer_small")
