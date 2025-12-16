@@ -1,12 +1,10 @@
 import matplotlib.pyplot as plt
 import wandb
 
+
 class MetricsTracker:
     def __init__(self, log_wandb=True):
-        self.history = {
-            'train_loss': [], 'train_acc': [],
-            'val_loss': [], 'val_acc': [], 'lr': []
-        }
+        self.history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': [], 'lr': []}
         self.log_wandb = log_wandb
 
     def update(self, train_loss, train_acc, val_loss, val_acc, lr, epoch):
@@ -17,18 +15,10 @@ class MetricsTracker:
         self.history['lr'].append(lr)
 
         if self.log_wandb:
-            wandb.log({
-                'epoch': epoch,
-                'train_loss': train_loss,
-                'train_acc': train_acc,
-                'val_loss': val_loss,
-                'val_acc': val_acc,
-                'lr': lr
-            })
+            wandb.log({'epoch': epoch, 'train_loss': train_loss, 'train_acc': train_acc, 'val_loss': val_loss,
+                'val_acc': val_acc, 'lr': lr})
 
-    def plot(self):
-
-
+    def plot(self, model_name):
         fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 
         axes[0].plot(self.history['train_loss'], label='Train')
@@ -54,5 +44,5 @@ class MetricsTracker:
         axes[2].grid(True, alpha=0.3)
 
         plt.tight_layout()
-        plt.savefig('logs/training_curves.png', dpi=150)
+        plt.savefig(f'logs/training_curves_{model_name}.png', dpi=150)
         plt.show()

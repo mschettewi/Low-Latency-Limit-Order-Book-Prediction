@@ -135,5 +135,5 @@ def train_model(model, train_ds, val_ds, config, device, class_weights, ckpt_nam
                   f"LR: {lr:.6f} | {time.time() - t0:.1f}s{marker}")
 
         print(f"\nTraining complete! Best val acc: {best_val_acc:.4f}")
-        tracker.plot()
+        tracker.plot(wandb_name)
         return tracker
