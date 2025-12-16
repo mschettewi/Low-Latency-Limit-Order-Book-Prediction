@@ -81,7 +81,11 @@ def evaluate_model(model, test_ds, config, device, name=""):
 
     # Classification report
     print(f"\nClassification Report:")
-    print(classification_report(all_labels.numpy(), all_preds.numpy(), target_names=class_names, digits=4))
+    classification_report_str = classification_report(all_labels.numpy(), all_preds.numpy(), target_names=class_names, digits=4)
+    print(classification_report_str)
+
+    with open(f'logs/classification_report_{name}.txt', 'w') as f:
+        f.write(classification_report_str)
 
     results = {'test_loss': test_loss, 'test_acc': test_acc, 'predictions': all_preds, 'labels': all_labels,
             'confusion_matrix': cm}
