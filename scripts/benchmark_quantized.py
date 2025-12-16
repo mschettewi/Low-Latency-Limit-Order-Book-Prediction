@@ -5,7 +5,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import torch
 from src.lob.models.transformer import LOBTransformer, ModelConfig
-from src.lob.evals.quantized_model import benchmark_quantization
+from src.lob.evals.quantized_model import benchmark_quantization, get_model_accuracy
+from src.lob.data.dataset import get_datasets
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -18,4 +19,20 @@ if __name__ == "__main__":
 
     model = LOBTransformer(transformer_config).to(device)
 
-    benchmark_quantization(model, transformer_config)
+    quantized_model = benchmark_quantization(model, transformer_config)
+
+    # Load Test Dataset
+    _, _, test_dataset = get_datasets()
+
+    # 1. Get Baseline Accuracy (FP32)
+    # Ensure test_dataset is loaded from your previous cells
+    print("\nMeasuring Accuracy Impact...")
+    acc_fp32 = get_model_accuracy(model, test_dataset)
+    print(f"Original Model (FP32) Accuracy: {acc_fp32:.2%}")
+
+    # 2. Get Quantized Accuracy (Int8)
+    acc_int8 = get_model_accuracy(quantized_model, test_dataset)
+    print(f"Quantized Model (Int8) Accuracy: {acc_int8:.2%}")
+
+    # 3. Report the Drop
+    print(f"Accuracy Drop: {acc_fp32 - acc_int8:.2%}")

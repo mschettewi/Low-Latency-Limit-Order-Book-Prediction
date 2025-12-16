@@ -1,19 +1,23 @@
-import torch.quantization
 import os
 import time
-from src.lob.models.transformer import LOBTransformer, ModelConfig
+
+import torch.quantization
+from torch.utils.data import DataLoader
+
+from src.lob.models.transformer import LOBTransformer
+
 
 def print_model_size(mdl):
     torch.save(mdl.state_dict(), "temp.p")
-    size_mb = os.path.getsize("temp.p")/1e6
+    size_mb = os.path.getsize("temp.p") / 1e6
     print(f'Size (MB): {size_mb:.2f}')
     os.remove('temp.p')
 
 
 def benchmark_quantization(model, config):
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DYNAMIC QUANTIZATION BENCHMARK (CPU SCENARIO)")
-    print("="*70)
+    print("=" * 70)
 
     # 1. Prepare Baseline Model on CPU
     # We must move to CPU because Pytorch Dynamic Quantization is a CPU-specific optimization
@@ -38,7 +42,6 @@ def benchmark_quantization(model, config):
         _ = model_cpu(dummy_input_cpu)
     avg_latency_fp32 = (time.time() - t0) / 50 * 1000
     print(f"FP32 CPU Latency: {avg_latency_fp32:.2f} ms")
-
 
     # 2. Apply Dynamic Quantization
     print("\nApplying Selective Quantization...")
@@ -75,3 +78,27 @@ def benchmark_quantization(model, config):
 
     print(f"Int8 CPU Latency: {avg_latency_int8:.2f} ms")
     print(f"\nSpeedup: {avg_latency_fp32 / avg_latency_int8:.2f}x")
+
+    return quantized_model
+
+
+# Helper function to calculate accuracy
+def get_model_accuracy(model, dataset, device="cpu", max_samples=1000):
+    # We limit samples to 1000 to keep it fast on CPU
+    loader = DataLoader(dataset, batch_size=100, shuffle=False)
+    correct = 0
+    total = 0
+
+    model.eval()
+    with torch.no_grad():
+        for x, y in loader:
+            x, y = x.to(device), y.to(device)
+            outputs = model(x)
+            predictions = torch.argmax(outputs, dim=1)
+            correct += (predictions == y).sum().item()
+            total += y.size(0)
+
+            if total >= max_samples:
+                break
+
+    return correct / total
