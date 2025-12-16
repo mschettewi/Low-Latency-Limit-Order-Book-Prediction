@@ -21,7 +21,8 @@ def evaluate_and_print(name, model_cls, config, ckpt_name):
     model = model_cls(config).to(device)
     ckpt_path = f"checkpoints/{ckpt_name}"
 
-    results = evaluate_model(model=model, test_ds=test_dataset, config=config, device=device, ckpt_path=ckpt_path, )
+    results = evaluate_model(model=model, test_ds=test_dataset, config=config, device=device, ckpt_path=ckpt_path,
+                             name=name)
 
     # Adjust keys if your evaluate_model dict uses different names
     test_acc = results.get("test_acc", None)
@@ -44,7 +45,7 @@ transformer_config.print_summary("Model Configuration")
 
 # 1) Transformer ('transformer_balanced.pt' and 'config')
 transformer_results = evaluate_and_print(name="Transformer", model_cls=LOBTransformer, config=transformer_config,
-    ckpt_name="transformer_balanced.pt", )
+                                         ckpt_name="transformer_balanced.pt", )
 
 cnn_config = ModelConfig()  # or ModelConfig.base()
 
@@ -57,7 +58,6 @@ cnn_config.seq_length = seq_length
 cnn_config.input_dim = input_dim
 cnn_config.num_classes = num_classes
 
-# You can tweak training hyperparams here if you want
 cnn_config.num_epochs = 20  # e.g. fewer epochs for a first run
 cnn_config.batch_size = 256
 cnn_config.learning_rate = 1e-3
@@ -66,4 +66,4 @@ cnn_config.use_compile = False
 
 # 2) CNN baseline
 cnn_results = evaluate_and_print(name="CNN baseline", model_cls=LOBCNN, config=cnn_config,
-    ckpt_name="cnn_baseline.pt", )
+                                 ckpt_name="cnn_baseline.pt", )

@@ -1,13 +1,14 @@
 from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix, classification_report
 from torch.utils.data import DataLoader
-import torch.nn.functional as F
 
 
-def evaluate_model(model, test_ds, config, device, ckpt_path=None):
+def evaluate_model(model, test_ds, config, device, ckpt_path=None, name=""):
     """Comprehensive model evaluation"""
     if ckpt_path and Path(ckpt_path).exists():
         ckpt = torch.load(ckpt_path, map_location=device, weights_only=False)
@@ -88,7 +89,7 @@ def evaluate_model(model, test_ds, config, device, ckpt_path=None):
     plt.ylabel('True Label')
     plt.xlabel('Predicted Label')
     plt.tight_layout()
-    plt.savefig('logs/confusion_matrix.png', dpi=150, bbox_inches='tight')
+    plt.savefig(f'logs/confusion_matrix_{name}.png', dpi=150, bbox_inches='tight')
     plt.show()
 
     # Classification report
@@ -96,8 +97,7 @@ def evaluate_model(model, test_ds, config, device, ckpt_path=None):
     print(classification_report(all_labels.numpy(), all_preds.numpy(), target_names=class_names, digits=4))
 
     return {'test_loss': test_loss, 'test_acc': test_acc, 'predictions': all_preds, 'labels': all_labels,
-        'confusion_matrix': cm}
-
+            'confusion_matrix': cm}
 
 # if __name__ == "__main__":
 #     # Evaluate the trained model
