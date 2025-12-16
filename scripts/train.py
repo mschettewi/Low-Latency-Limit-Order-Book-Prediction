@@ -180,6 +180,7 @@ def train_transformer_small(device, train_dataset, val_dataset, test_dataset):
 
     print("Finished training Transformer small.")
 
+
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     train_dataset, val_dataset, test_dataset = get_datasets()

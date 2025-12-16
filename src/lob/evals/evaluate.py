@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -8,24 +6,13 @@ from sklearn.metrics import confusion_matrix, classification_report
 from torch.utils.data import DataLoader
 
 
-def evaluate_model(model, test_ds, config, device, ckpt_path=None, name=""):
+def evaluate_model(model, test_ds, config, device, name=""):
     """Comprehensive model evaluation"""
-    if ckpt_path and Path(ckpt_path).exists():
-        ckpt = torch.load(ckpt_path, map_location=device, weights_only=False)
+    print(f"\n===== Evaluating {name} =====")
 
-        # Fix for torch.compile: remove _orig_mod. prefix if present
-        state_dict = ckpt['model_state_dict']
-        if any(k.startswith('_orig_mod.') for k in state_dict.keys()):
-            print("Detected compiled model, removing _orig_mod. prefix...")
-            state_dict = {k.replace('_orig_mod.', ''): v for k, v in state_dict.items()}
-
-        model.load_state_dict(state_dict)
-        print(f"Loaded checkpoint from epoch {ckpt['epoch']}, val_acc={ckpt['val_acc']:.4f}")
-
-    model = model.to(device)
     model.eval()
 
-    loader = DataLoader(test_ds, config.batch_size, shuffle=False, num_workers=2, pin_memory=True)
+    loader = DataLoader(test_ds, config.batch_size, shuffle=False, num_workers=0, pin_memory=True)
 
     all_preds, all_labels = [], []
     total_loss, total = 0, 0
@@ -96,9 +83,16 @@ def evaluate_model(model, test_ds, config, device, ckpt_path=None, name=""):
     print(f"\nClassification Report:")
     print(classification_report(all_labels.numpy(), all_preds.numpy(), target_names=class_names, digits=4))
 
-    return {'test_loss': test_loss, 'test_acc': test_acc, 'predictions': all_preds, 'labels': all_labels,
+    results = {'test_loss': test_loss, 'test_acc': test_acc, 'predictions': all_preds, 'labels': all_labels,
             'confusion_matrix': cm}
 
-# if __name__ == "__main__":
-#     # Evaluate the trained model
-#     results = evaluate_model(model, test_dataset, config, device, "checkpoints/transformer_balanced.pt")
+    # Adjust keys if your evaluate_model dict uses different names
+    test_acc = results.get("test_acc", None)
+    test_loss = results.get("test_loss", None)
+
+    if test_loss is not None:
+        print(f"{name} test loss: {test_loss:.4f}")
+    if test_acc is not None:
+        print(f"{name} test accuracy: {test_acc:.4f}")
+
+    return results

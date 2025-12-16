@@ -74,7 +74,7 @@ def benchmark_model(model, config, device=torch.device("cuda" if torch.cuda.is_a
                     wandb_name=""):
     "Returns latency and throughput"
     stats_df = pd.DataFrame()
-    for batch_size in [1, 8]: # 256
+    for batch_size in [1, 8, 256]:
         print(f"\n--- Benchmarking inference for batch size {batch_size} ---")
         stats = benchmark_inference(model=model, config=config, device=device, batch_size=batch_size, wandb_name=wandb_name)
         stats_df = pd.concat([stats_df, pd.DataFrame([stats])], ignore_index=True)
